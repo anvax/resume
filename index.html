@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Худобин Андрей // System Engineer</title>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -25,9 +25,10 @@
     color: var(--text-main);
     font-family: var(--font-sans);
     line-height: 1.6;
-    overflow-x: hidden; 
+    overflow-x: hidden;
   }
 
+  /* Подсветка (Спотлайт) */
   #spotlight {
     position: fixed;
     top: 0; left: 0;
@@ -38,6 +39,7 @@
     transition: opacity 0.3s ease;
   }
 
+  /* Фон (Матрица) */
   #matrix-bg {
     position: fixed;
     top: 0; left: 0;
@@ -47,40 +49,45 @@
     pointer-events: none;
   }
 
-  /* --- СИСТЕМА ЭКРАНОВ (SPA) --- */
+  /* --- СИСТЕМА ЭКРАНОВ --- */
   .screen {
     position: fixed;
     top: 0; left: 0;
-    width: 100%; height: 100vh;
-    display: flex;
+    width: 100%; 
+    height: 100%; /* Базовая высота */
+    height: 100dvh; /* Динамическая высота для мобильных браузеров (решает проблему с панелями) */
+    
+    display: none; /* По умолчанию скрыты */
     flex-direction: column;
-    justify-content: center; 
+    justify-content: flex-start; /* Контент начинается сверху */
     align-items: center;
-    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s ease;
-    overflow-y: auto; 
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
+    
     background: var(--bg-dark);
     z-index: 1;
-    padding: 30px 20px; 
+    
+    /* Безопасные отступы для iPhone/Android (чтобы не перекрывало "челкой" и панелью) */
+    padding-top: max(20px, env(safe-area-inset-top));
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+    padding-left: 20px;
+    padding-right: 20px;
+    
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
 
-  .screen.hidden-up {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-  }
-  
-  .screen.hidden-right {
-    transform: translateX(100%);
-    opacity: 0;
-    pointer-events: none;
+  /* Активный экран */
+  .screen.active {
+    display: flex;
+    opacity: 1;
   }
 
   .content-wrapper {
     width: 100%;
     max-width: 900px;
-    margin: auto; 
+    margin: auto; /* Центрирование по вертикали, если контента мало */
     position: relative;
     z-index: 2;
   }
@@ -88,8 +95,6 @@
   /* --- ГЛАВНЫЙ ЭКРАН (HERO) --- */
   #screen-hero {
     text-align: left;
-    padding-left: 8%;
-    padding-right: 8%;
   }
 
   .hero-pretitle {
@@ -97,8 +102,6 @@
     color: var(--accent);
     font-size: 1rem;
     margin-bottom: 20px;
-    opacity: 0;
-    animation: fadeUp 1s ease forwards 0.2s;
   }
 
   .hero-title {
@@ -108,8 +111,6 @@
     color: #fff;
     letter-spacing: -1px;
     margin-bottom: 20px;
-    opacity: 0;
-    animation: fadeUp 1s ease forwards 0.4s;
   }
 
   .hero-title span {
@@ -122,8 +123,6 @@
     color: var(--text-muted);
     max-width: 600px;
     margin-bottom: 40px;
-    opacity: 0;
-    animation: fadeUp 1s ease forwards 0.6s;
   }
 
   .hero-desc strong { color: var(--text-main); font-weight: 600; }
@@ -144,8 +143,6 @@
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 0 20px rgba(0, 255, 170, 0.3);
-    opacity: 0;
-    animation: fadeUp 1s ease forwards 0.8s;
     text-transform: uppercase;
     letter-spacing: 1px;
     width: fit-content;
@@ -155,15 +152,10 @@
   .cta-button svg { width: 20px; height: 20px; transition: transform 0.3s ease; }
   .cta-button:hover svg { transform: translateX(5px); }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
   /* --- ЭКРАН НАВИГАЦИИ (МЕНЮ) --- */
   #screen-menu { background: #070b14; }
 
-  .menu-header { text-align: center; margin-bottom: 40px; }
+  .menu-header { text-align: center; margin-bottom: 30px; }
 
   .menu-header h2 {
     font-family: var(--font-mono);
@@ -174,14 +166,14 @@
   .nav-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    gap: 15px;
   }
 
   .nav-card {
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 30px 20px;
+    padding: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: left;
@@ -189,26 +181,14 @@
     overflow: hidden;
   }
 
-  .nav-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 3px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
-  }
-
   .nav-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     border-color: rgba(0, 255, 170, 0.3);
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
 
-  .nav-card:hover::before { transform: scaleX(1); }
-
-  .nav-card-icon { font-size: 2rem; margin-bottom: 15px; }
-  .nav-card h3 { color: #fff; font-size: 1.2rem; margin-bottom: 10px; }
+  .nav-card-icon { font-size: 2rem; margin-bottom: 10px; }
+  .nav-card h3 { color: #fff; font-size: 1.2rem; margin-bottom: 5px; }
   .nav-card p { color: var(--text-muted); font-size: 0.9rem; }
 
   /* --- ВНУТРЕННИЕ ЭКРАНЫ --- */
@@ -216,40 +196,41 @@
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 30px;
+    padding: 25px;
     width: 100%;
+    margin-bottom: 20px;
   }
 
   .page-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border-bottom: 1px solid var(--border);
-    padding-bottom: 20px;
+    padding-bottom: 15px;
     flex-wrap: wrap; 
-    gap: 15px;
+    gap: 10px;
   }
 
   .page-title {
     font-family: var(--font-mono);
     color: var(--accent);
-    font-size: clamp(1.2rem, 4vw, 1.8rem);
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
   }
 
   .back-btn {
     background: transparent;
     border: 1px solid var(--border);
     color: var(--text-muted);
-    padding: 10px 20px;
+    padding: 8px 15px;
     border-radius: 50px;
     cursor: pointer;
     font-family: var(--font-mono);
     transition: all 0.2s;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
+    gap: 5px;
+    font-size: 0.85rem;
     white-space: nowrap;
   }
 
@@ -260,71 +241,66 @@
   }
 
   /* Навыки */
-  .skills-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+  .skills-grid { display: flex; flex-wrap: wrap; gap: 10px; }
   .skill-tag {
     background: rgba(88, 166, 255, 0.1);
     color: var(--text-main);
     border: 1px solid rgba(88, 166, 255, 0.2);
-    padding: 8px 15px;
+    padding: 6px 12px;
     border-radius: 30px;
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     transition: all 0.2s;
   }
-  .skill-tag:hover { background: rgba(0, 255, 170, 0.15); border-color: var(--accent); color: var(--accent); transform: scale(1.05); }
+  .skill-tag:hover { background: rgba(0, 255, 170, 0.15); border-color: var(--accent); color: var(--accent); }
 
   /* Таймлайн */
-  .timeline { border-left: 2px solid var(--border); padding-left: 20px; margin-left: 10px; }
-  .timeline-item { position: relative; margin-bottom: 30px; }
+  .timeline { border-left: 2px solid var(--border); padding-left: 15px; margin-left: 10px; }
+  .timeline-item { position: relative; margin-bottom: 25px; }
   .timeline-item::before {
-    content: ''; position: absolute; left: -27px; top: 5px; width: 12px; height: 12px;
+    content: ''; position: absolute; left: -21px; top: 5px; width: 10px; height: 10px;
     border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent);
   }
-  .timeline-date { color: var(--accent-blue); font-family: var(--font-mono); font-size: 0.85rem; margin-bottom: 5px; }
-  .timeline-title { font-size: 1.1rem; color: #fff; font-weight: bold; margin-bottom: 5px; }
+  .timeline-date { color: var(--accent-blue); font-family: var(--font-mono); font-size: 0.8rem; margin-bottom: 3px; }
+  .timeline-title { font-size: 1.05rem; color: #fff; font-weight: bold; margin-bottom: 3px; }
   .timeline-desc { color: var(--text-muted); font-size: 0.9rem; }
 
   /* Проекты */
   .project-item {
     border: 1px solid var(--border);
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
-    margin-bottom: 15px;
-    transition: background 0.3s;
+    margin-bottom: 12px;
   }
-  .project-item:hover { background: rgba(255,255,255,0.02); border-color: var(--accent-blue); }
-  .project-item h3 { color: #fff; margin-bottom: 8px; font-size: 1.1rem; }
-  .project-item p { color: var(--text-muted); font-size: 0.9rem; }
+  .project-item h3 { color: #fff; margin-bottom: 5px; font-size: 1rem; }
+  .project-item p { color: var(--text-muted); font-size: 0.85rem; }
 
   /* Контакты */
-  .contact-list { display: flex; flex-direction: column; gap: 15px; }
+  .contact-list { display: flex; flex-direction: column; gap: 10px; }
   .contact-item {
     display: flex; align-items: center; gap: 15px; color: var(--text-main);
-    text-decoration: none; padding: 15px 20px; border: 1px solid var(--border);
+    text-decoration: none; padding: 15px; border: 1px solid var(--border);
     border-radius: 8px; transition: all 0.3s;
   }
-  .contact-item:hover { background: rgba(0,255,170,0.05); border-color: var(--accent); transform: translateX(5px); }
+  .contact-item:hover { background: rgba(0,255,170,0.05); border-color: var(--accent); }
   .contact-icon { font-size: 1.5rem; }
   .contact-info { display: flex; flex-direction: column; }
 
-  /* === МОБИЛЬНАЯ АДАПТАЦИЯ (Портретный режим) === */
+  /* Мобильная адаптация */
   @media (max-width: 768px) {
-    .screen { padding: 20px 15px; }
-    #screen-hero { padding-left: 20px; padding-right: 20px; text-align: center; justify-content: center; }
+    #screen-hero { 
+      text-align: center; 
+      justify-content: center; /* Центрируем контент по вертикали на главной */
+    }
     .cta-button { margin: 0 auto; }
-    .nav-grid { grid-template-columns: 1fr; gap: 15px; }
-    .nav-card { padding: 20px; }
-    .page-card { padding: 20px 15px; }
-    .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    
+    .screen { justify-content: flex-start; } /* На внутренних экранах контент сверху */
+    
+    .page-header { 
+      flex-direction: column; 
+      align-items: flex-start; 
+    }
     .back-btn { width: 100%; justify-content: center; }
-    .timeline { padding-left: 15px; }
-    .timeline-item::before { left: -22px; width: 10px; height: 10px; }
-  }
-  
-  @media (max-height: 500px) {
-    .screen { justify-content: flex-start; padding-top: 40px; padding-bottom: 40px; }
-    .hero-title { font-size: 2rem; }
-    .hero-desc { margin-bottom: 20px; }
   }
 </style>
 </head>
@@ -334,58 +310,58 @@
 <canvas id="matrix-bg"></canvas>
 
 <!-- ЭКРАН 1: HERO / ЗАСТАВКА -->
-<div id="screen-hero" class="screen">
+<div id="screen-hero" class="screen active">
   <div class="content-wrapper">
     <div class="hero-pretitle">Привет, я Андрей.</div>
     <h1 class="hero-title">Проектирую <span>сложные</span> системы.</h1>
     <p class="hero-desc">
       Инженер-программист из Санкт-Петербурга. Специализируюсь на <strong>промышленной автоматизации</strong>, embedded-разработке на <strong>C++</strong> и настройке <strong>Linux-инфраструктуры</strong>. 
     </p>
-    <button class="cta-button" onclick="navigateTo('screen-menu', 'forward')">
+    <button class="cta-button" onclick="openScreen('screen-menu')">
       Открыть портфолио
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
   </div>
 </div>
 
-<!-- ЭКРАН 2: ГЛАВНОЕ МЕНЮ (НАВИГАЦИЯ) -->
-<div id="screen-menu" class="screen hidden-up">
+<!-- ЭКРАН 2: ГЛАВНОЕ МЕНЮ -->
+<div id="screen-menu" class="screen">
   <div class="content-wrapper">
     <div class="menu-header">
       <h2>// Изучить опыт</h2>
     </div>
     <div class="nav-grid">
-      <div class="nav-card" onclick="navigateTo('screen-skills', 'forward')">
+      <div class="nav-card" onclick="openScreen('screen-skills')">
         <div class="nav-card-icon">⚙️</div>
         <h3>Стек технологий</h3>
-        <p>C++, Python, Linux, SCADA, CODESYS и промышленные протоколы.</p>
+        <p>C++, Python, Linux, SCADA, CODESYS и протоколы.</p>
       </div>
-      <div class="nav-card" onclick="navigateTo('screen-exp', 'forward')">
+      <div class="nav-card" onclick="openScreen('screen-exp')">
         <div class="nav-card-icon">💼</div>
         <h3>Опыт работы</h3>
-        <p>Хронология: от техника-программиста до инженера в НПФ «Система-Сервис».</p>
+        <p>От техника-программиста до инженера.</p>
       </div>
-      <div class="nav-card" onclick="navigateTo('screen-projects', 'forward')">
+      <div class="nav-card" onclick="openScreen('screen-projects')">
         <div class="nav-card-icon">🚀</div>
-        <h3>Ключевые проекты</h3>
-        <p>Разработка алгоритмов ГПА, высокопроизводительные парсеры и инфраструктура.</p>
+        <h3>Проекты</h3>
+        <p>Алгоритмы ГПА, парсеры и инфраструктура.</p>
       </div>
-      <div class="nav-card" onclick="navigateTo('screen-contacts', 'forward')">
+      <div class="nav-card" onclick="openScreen('screen-contacts')">
         <div class="nav-card-icon">📞</div>
         <h3>Связаться</h3>
-        <p>Открыт к предложениям. Email, Telegram и телефон для связи.</p>
+        <p>Email, Telegram и телефон.</p>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ЭКРАН 3: НАВЫКИ -->
-<div id="screen-skills" class="screen hidden-right">
+<div id="screen-skills" class="screen">
   <div class="content-wrapper">
     <div class="page-card">
       <div class="page-header">
         <div class="page-title">> Стек технологий</div>
-        <button class="back-btn" onclick="navigateTo('screen-menu', 'back')">← Назад в меню</button>
+        <button class="back-btn" onclick="openScreen('screen-menu')">← Назад в меню</button>
       </div>
       <div class="skills-grid">
         <span class="skill-tag">C++</span>
@@ -405,35 +381,35 @@
         <span class="skill-tag">Grafana</span>
         <span class="skill-tag">Английский (C1)</span>
       </div>
-      <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
-        <h3 style="color: #fff; margin-bottom: 10px; font-family: var(--font-mono);">Образование</h3>
-        <p style="color: var(--text-muted); font-size: 0.95rem;">СПбПУ Петра Великого. Бакалавриат с отличием (Управление и информатика в технических системах), Магистратура (Киберфизические системы).</p>
+      <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;">
+        <h3 style="color: #fff; margin-bottom: 5px; font-family: var(--font-mono);">Образование</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">СПбПУ Петра Великого. Бакалавриат с отличием, Магистратура (Киберфизические системы).</p>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ЭКРАН 4: ОПЫТ -->
-<div id="screen-exp" class="screen hidden-right">
+<div id="screen-exp" class="screen">
   <div class="content-wrapper">
     <div class="page-card">
       <div class="page-header">
         <div class="page-title">> Опыт работы</div>
-        <button class="back-btn" onclick="navigateTo('screen-menu', 'back')">← Назад в меню</button>
+        <button class="back-btn" onclick="openScreen('screen-menu')">← Назад в меню</button>
       </div>
       <div class="timeline">
         <div class="timeline-item">
           <div class="timeline-date">Июль 2024 — Настоящее время</div>
           <div class="timeline-title">НПФ «Система-Сервис»</div>
           <div class="timeline-desc">
-            Инженер. Разработка ПО для контроллеров (C++/ST). Реализация алгоритмов управления, создание мнемосхем SCADA, разработка драйверов Modbus RTU/TCP для панелей EKF, KEAZ, ОВЕН.
+            Инженер. Разработка ПО для контроллеров (C++/ST), алгоритмы управления, SCADA, драйверы Modbus RTU/TCP.
           </div>
         </div>
         <div class="timeline-item">
           <div class="timeline-date">Июль 2023 — Июль 2024</div>
           <div class="timeline-title">НИЦ СПб ЭТУ</div>
           <div class="timeline-desc">
-            Техник-программист. Выполнение практических заданий по C++ и микроконтроллерам. Моделирование системы управления электроприводом в MATLAB.
+            Техник-программист. C++, микроконтроллеры. Моделирование СУ электроприводом в MATLAB.
           </div>
         </div>
       </div>
@@ -442,64 +418,64 @@
 </div>
 
 <!-- ЭКРАН 5: ПРОЕКТЫ -->
-<div id="screen-projects" class="screen hidden-right">
+<div id="screen-projects" class="screen">
   <div class="content-wrapper">
     <div class="page-card">
       <div class="page-header">
         <div class="page-title">> Ключевые проекты</div>
-        <button class="back-btn" onclick="navigateTo('screen-menu', 'back')">← Назад в меню</button>
+        <button class="back-btn" onclick="openScreen('screen-menu')">← Назад в меню</button>
       </div>
       
       <div class="project-item">
         <h3>ВКР: Управление вентиляцией ГПА</h3>
-        <p>Разработка ПО системы управления. Реализация алгоритмов и логики обработки сигналов (аналоговых и дискретных). Настройка имитационного режима для проверки программной логики.</p>
+        <p>Разработка ПО, алгоритмы обработки сигналов, имитационный режим.</p>
       </div>
       
       <div class="project-item">
         <h3>Инфраструктура автоматизированных систем</h3>
-        <p>Администрирование Linux, автоматизация настройки через Ansible, контейнеризация сервисов (Docker, Docker Compose), обмен данными по MQTT и настройка мониторинга в Grafana.</p>
+        <p>Linux, Ansible, Docker, MQTT, мониторинг Grafana.</p>
       </div>
       
       <div class="project-item">
         <h3>Парсер Protocol Buffers</h3>
-        <p>Разработан высокопроизводительный парсер length-prefixed сообщений на C++. Реализована обработка потоковых данных и восстановление границ сообщений.</p>
+        <p>Высокопроизводительный парсер на C++, обработка потоковых данных.</p>
       </div>
 
       <div class="project-item">
         <h3>Амплитудно-модулированный UART</h3>
-        <p>Разработка встроенного ПО для STM32. Реализация обмена данными по модифицированному UART, отладка алгоритмов передачи и обработки данных.</p>
+        <p>Embedded ПО для STM32, обмен данными по модифицированному UART.</p>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ЭКРАН 6: КОНТАКТЫ -->
-<div id="screen-contacts" class="screen hidden-right">
+<div id="screen-contacts" class="screen">
   <div class="content-wrapper">
     <div class="page-card">
       <div class="page-header">
         <div class="page-title">> Связаться со мной</div>
-        <button class="back-btn" onclick="navigateTo('screen-menu', 'back')">← Назад в меню</button>
+        <button class="back-btn" onclick="openScreen('screen-menu')">← Назад в меню</button>
       </div>
       <div class="contact-list">
         <a href="mailto:a2.khudobin3@gmail.com" class="contact-item">
           <span class="contact-icon">📩</span>
           <div class="contact-info">
-            <div style="color: #fff; font-weight: bold; font-size: 1.05rem;">Email</div>
+            <div style="color: #fff; font-weight: bold;">Email</div>
             <div style="color: var(--text-muted); font-size: 0.9rem;">a2.khudobin3@gmail.com</div>
           </div>
         </a>
         <a href="https://t.me/anvax" target="_blank" class="contact-item">
           <span class="contact-icon">✈️</span>
           <div class="contact-info">
-            <div style="color: #fff; font-weight: bold; font-size: 1.05rem;">Telegram</div>
+            <div style="color: #fff; font-weight: bold;">Telegram</div>
             <div style="color: var(--text-muted); font-size: 0.9rem;">@anvax</div>
           </div>
         </a>
         <a href="tel:+79117285089" class="contact-item">
           <span class="contact-icon">📞</span>
           <div class="contact-info">
-            <div style="color: #fff; font-weight: bold; font-size: 1.05rem;">Телефон</div>
+            <div style="color: #fff; font-weight: bold;">Телефон</div>
             <div style="color: var(--text-muted); font-size: 0.9rem;">+7 (911) 728-50-89</div>
           </div>
         </a>
@@ -509,53 +485,30 @@
 </div>
 
 <script>
-  // --- Универсальная логика переходов ---
-  let currentScreen = 'screen-hero';
+  // --- Логика переключения экранов (Простая и надежная) ---
+  function openScreen(targetId) {
+    // 1. Находим все экраны и убираем у них класс active
+    const allScreens = document.querySelectorAll('.screen');
+    allScreens.forEach(screen => {
+      screen.classList.remove('active');
+      screen.scrollTop = 0; // Сбрасываем скролл наверх
+    });
 
-  function navigateTo(targetId, direction) {
-    const currentEl = document.getElementById(currentScreen);
-    const targetEl = document.getElementById(targetId);
-
-    if (currentScreen === targetId) return;
-
-    // Сбрасываем скролл у целевого экрана, чтобы он открывался сверху
-    targetEl.scrollTop = 0;
-
-    // 1. Прячем текущий экран
-    if (direction === 'forward') {
-      // Если идем ВПЕРЕД (с заставки в меню), текущий экран уезжает ВВЕРХ
-      if (currentScreen === 'screen-hero') {
-        currentEl.classList.add('hidden-up');
-      } else {
-        // Если переходим между внутренними страницами, текущий уезжает ВЛЕВО
-        currentEl.classList.add('hidden-right');
-      }
-    } else {
-      // Если идем НАЗАД (из карточки в меню), текущий экран уезжает ВПРАВО
-      currentEl.classList.add('hidden-right');
+    // 2. Находим нужный экран и добавляем ему класс active
+    const targetScreen = document.getElementById(targetId);
+    if (targetScreen) {
+      targetScreen.classList.add('active');
     }
-
-    // 2. Показываем целевой экран
-    targetEl.classList.remove('hidden-up');
-    targetEl.classList.remove('hidden-right');
-    
-    // Небольшая задержка для срабатывания CSS-анимации появления
-    setTimeout(() => {
-      targetEl.style.transform = 'translate(0, 0)';
-      targetEl.style.opacity = '1';
-    }, 50);
-
-    currentScreen = targetId;
   }
 
-  // --- 2. Спотлайт за мышкой ---
+  // --- Спотлайт за мышкой ---
   const spotlight = document.getElementById('spotlight');
   document.addEventListener('mousemove', (e) => {
     spotlight.style.setProperty('--mouse-x', e.clientX + 'px');
     spotlight.style.setProperty('--mouse-y', e.clientY + 'px');
   });
 
-  // --- 3. Эффект магнита для кнопки ---
+  // --- Эффект магнита для кнопки ---
   const ctaButton = document.querySelector('.cta-button');
   if(ctaButton) {
     ctaButton.addEventListener('mousemove', (e) => {
@@ -570,7 +523,7 @@
     });
   }
 
-  // --- 4. Фон (Матрица) ---
+  // --- Фон (Матрица) ---
   const canvas = document.getElementById('matrix-bg');
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
