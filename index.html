@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Худобин Андрей Владимирович — Инженер-программист</title>
+<style>
+  :root{
+    --accent:#1f3a5f;
+    --accent-light:#2e5a8f;
+    --bg:#f4f6f9;
+    --card:#ffffff;
+    --text:#222;
+    --muted:#5b6672;
+    --line:#e2e8f0;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+    font-size:16px;
+  }
+
+  /* Верхняя панель */
+  header{
+    background:linear-gradient(135deg,var(--accent) 0%,var(--accent-light) 100%);
+    color:#fff;
+    padding:48px 24px 36px;
+  }
+  .container{max-width:980px;margin:0 auto;}
+  header h1{margin:0 0 6px;font-size:2.1em;letter-spacing:.5px;}
+  header .role{font-size:1.15em;opacity:.95;margin-bottom:18px;}
+  header .contact{
+    display:flex;flex-wrap:wrap;gap:8px 22px;
+    font-size:.95em;opacity:.95;
+  }
+  header .contact a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.4);}
+  header .contact a:hover{border-bottom-color:#fff;}
+
+  /* Навигация */
+  nav{
+    background:var(--card);
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:10;
+    box-shadow:0 1px 6px rgba(0,0,0,.05);
+  }
+  nav .container{
+    display:flex;flex-wrap:wrap;gap:4px 18px;
+    padding:10px 24px;font-size:.92em;
+  }
+  nav a{
+    color:var(--muted);text-decoration:none;padding:4px 0;
+    border-bottom:2px solid transparent;transition:.15s;
+  }
+  nav a:hover{color:var(--accent);border-bottom-color:var(--accent);}
+
+  main{padding:32px 24px 64px;}
+  section{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:26px 30px;
+    margin-bottom:22px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04);
+  }
+  section h2{
+    margin:0 0 18px;
+    font-size:1.35em;
+    color:var(--accent);
+    padding-bottom:8px;
+    border-bottom:2px solid var(--line);
+  }
+  section h3{margin:0 0 2px;font-size:1.08em;color:var(--accent);}
+  .muted{color:var(--muted);font-size:.93em;}
+  .job{margin-bottom:24px;}
+  .job:last-child{margin-bottom:0;}
+  .job-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;}
+  .job ul{margin:10px 0 0;padding-left:20px;}
+  .job li{margin-bottom:5px;}
+
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .tag{
+    background:#eaf0f7;color:var(--accent);
+    border-radius:14px;padding:3px 12px;font-size:.85em;
+    white-space:nowrap;
+  }
+
+  .grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px 28px;
+  }
+  .grid-2 .item{margin-bottom:12px;}
+
+  .project{margin-bottom:20px;}
+  .project:last-child{margin-bottom:0;}
+  .project p{margin:4px 0 0;}
+  .project ul{margin:6px 0 0;padding-left:20px;}
+  .project li{margin-bottom:4px;}
+
+  ul.clean{list-style:none;padding-left:0;margin:0;}
+  ul.clean li{padding-left:18px;position:relative;margin-bottom:4px;}
+  ul.clean li::before{
+    content:"▸";position:absolute;left:0;color:var(--accent-light);
+  }
+
+  footer{
+    text-align:center;color:var(--muted);
+    font-size:.85em;padding:10px 0 30px;
+  }
+
+  @media (max-width:640px){
+    header{padding:36px 18px 28px;}
+    header h1{font-size:1.5em;}
+    main{padding:20px 14px 48px;}
+    section{padding:20px 18px;}
+    .grid-2{grid-template-columns:1fr;}
+  }
+  @media print{
+    nav{display:none;}
+    body{background:#fff;font-size:12px;}
+    header{padding:20px;background:#1f3a5f !important;-webkit-print-color-adjust:exact;}
+    section{box-shadow:none;border:none;padding:10px 0;margin-bottom:10px;page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>Худобин Андрей Владимирович</h1>
+    <div class="role">Инженер-программист · Санкт-Петербург</div>
+    <div class="contact">
+      <span>+7 (911) 728-50-89</span>
+      <a href="mailto:a2.khudobin3@gmail.com">a2.khudobin3@gmail.com</a>
+      <a href="https://t.me/anvax" target="_blank" rel="noopener">Telegram: @anvax</a>
+      <span>23 года · готов к редким командировкам</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="container">
+    <a href="#about">Обо мне</a>
+    <a href="#skills">Ключевые навыки</a>
+    <a href="#experience">Опыт работы</a>
+    <a href="#projects">Проекты</a>
+    <a href="#education">Образование</a>
+    <a href="#extra">Дополнительно</a>
+  </div>
+</nav>
+
+<main class="container">
+
+  <!-- ОБО МНЕ -->
+  <section id="about">
+    <h2>Обо мне</h2>
+    <p>Выпускник Санкт-Петербургского политехнического университета Петра Великого с отличием по направлению «Управление в технических системах». Обучаюсь в магистратуре по направлению «Киберфизические системы и технологии».</p>
+    <p>Имею опыт разработки программного обеспечения для автоматизированных систем, реализации логики обработки сигналов и работы с промышленными технологиями. В рамках работы и учебных проектов занимался разработкой программных компонентов на C++ и Python, настройкой и сопровождением Linux-систем, работой с промышленными протоколами и контроллерами.</p>
+    <p>Имею опыт работы с системами управления, в том числе разработки программной логики и настройки имитационного режима для задания и обработки входных аналоговых параметров. В учебных проектах использовал MATLAB/Simulink для моделирования систем управления.</p>
+
+    <h3 style="margin-top:22px;">Желаемая должность</h3>
+    <p class="muted">Инженер-программист · полная занятость · гибрид / на месте работодателя / удалённо · время в пути до работы — не более часа.</p>
+  </section>
+
+  <!-- НАВЫКИ -->
+  <section id="skills">
+    <h2>Ключевые навыки</h2>
+
+    <h3>Системы управления и автоматизация</h3>
+    <div class="tags">
+      <span class="tag">Разработка ПО для автоматизированных систем</span>
+      <span class="tag">Логика обработки сигналов</span>
+      <span class="tag">Аналоговые и дискретные сигналы</span>
+      <span class="tag">Имитационный режим</span>
+      <span class="tag">MATLAB</span>
+      <span class="tag">Simulink</span>
+    </div>
+
+    <h3 style="margin-top:20px;">Программирование</h3>
+    <div class="tags">
+      <span class="tag">C++</span>
+      <span class="tag">Python</span>
+      <span class="tag">Bash</span>
+      <span class="tag">Git</span>
+      <span class="tag">ООП</span>
+    </div>
+
+    <h3 style="margin-top:20px;">Промышленная автоматизация</h3>
+    <div class="tags">
+      <span class="tag">Siemens PLC</span>
+      <span class="tag">Schneider Modicon</span>
+      <span class="tag">ОВЕН</span>
+      <span class="tag">CODESYS</span>
+      <span class="tag">SCADA</span>
+      <span class="tag">OPC UA</span>
+      <span class="tag">Modbus RTU/TCP</span>
+      <span class="tag">MQTT</span>
+      <span class="tag">HMI</span>
+      <span class="tag">STM32</span>
+    </div>
+
+    <h3 style="margin-top:20px;">Дополнительно</h3>
+    <div class="tags">
+      <span class="tag">Linux</span>
+      <span class="tag">Docker</span>
+      <span class="tag">Docker Compose</span>
+      <span class="tag">Ansible</span>
+      <span class="tag">TCP/IP</span>
+      <span class="tag">HTTP</span>
+      <span class="tag">DNS</span>
+      <span class="tag">OSI</span>
+      <span class="tag">Grafana</span>
+      <span class="tag">UML</span>
+      <span class="tag">Mathcad</span>
+      <span class="tag">MS Excel</span>
+    </div>
+
+    <h3 style="margin-top:20px;">Языки</h3>
+    <div class="grid-2">
+      <div class="item"><strong>Русский</strong> — родной</div>
+      <div class="item"><strong>Английский</strong> — C1 (продвинутый)</div>
+    </div>
+  </section>
+
+  <!-- ОПЫТ -->
+  <section id="experience">
+    <h2>Опыт работы — 3 года 4 месяца</h2>
+
+    <div class="job">
+      <div class="job-head">
+        <div>
+          <h3>НПФ «Система-Сервис»</h3>
+          <div class="muted">Инженер · Санкт-Петербург · <a href="http://systserv.spb.ru/" target="_blank" rel="noopener">systserv.spb.ru</a></div>
+        </div>
+        <div class="muted">Июль 2024 — настоящее время<br>(2 года 4 месяца)</div>
+      </div>
+      <ul>
+        <li>Разработка ПО для контроллеров: реализация пользовательских алгоритмов и сборка проекта на C++/ST.</li>
+        <li>Разработка алгоритмов управления: графическое отображение алгоритмов в виде блок-схем и преобразование в C++/ST.</li>
+        <li>Разработка мнемосхем SCADA-системы.</li>
+        <li>Разработка ПО для панелей EKF, KEAZ, ОВЕН.</li>
+        <li>Разработка драйверов для обмена тегами с другими устройствами (Modbus RTU/TCP).</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <div>
+          <h3>НИЦ СПб ЭТУ (Научно-инженерный центр СПб электротехнического университета)</h3>
+          <div class="muted">Техник-программист · Санкт-Петербург · <a href="http://nicetu.spb.ru" target="_blank" rel="noopener">nicetu.spb.ru</a></div>
+        </div>
+        <div class="muted">Июль 2023 — Июль 2024<br>(1 год 1 месяц)</div>
+      </div>
+      <ul>
+        <li>Проходил обучающие курсы, выполнял тестовые практические задания по C++ и микроконтроллерам.</li>
+        <li>Моделирование системы управления электроприводом в MATLAB.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ПРОЕКТЫ -->
+  <section id="projects">
+    <h2>Проекты и практический опыт</h2>
+
+    <div class="project">
+      <h3>ВКР — система управления вентиляцией и отоплением ангарного укрытия газоперекачивающего агрегата</h3>
+      <ul>
+        <li>Разрабатывал программное обеспечение системы управления.</li>
+        <li>Реализовывал алгоритмы и логику обработки сигналов.</li>
+        <li>Работал с дискретными и аналоговыми параметрами системы.</li>
+        <li>Разрабатывал программные компоненты на ST, C++ и вспомогательных скриптах.</li>
+        <li>Участвовал в настройке имитационного режима для проверки программной логики.</li>
+        <li>Исследовал работу системы в различных режимах.</li>
+      </ul>
+    </div>
+
+    <div class="project">
+      <h3>Моделирование системы управления синхронным двигателем</h3>
+      <ul>
+        <li>Разрабатывал учебную модель системы управления в MATLAB/Simulink.</li>
+        <li>Изучал принципы работы и различные режимы системы.</li>
+        <li>Выполнял моделирование в рамках учебного проекта.</li>
+      </ul>
+    </div>
+
+    <div class="project">
+      <h3>Разработка системы управления сортировочной станцией FESTO</h3>
+      <ul>
+        <li>Разрабатывал программное обеспечение на Python.</li>
+        <li>Реализовывал логику управления оборудованием.</li>
+        <li>Выполнял обработку сигналов и взаимодействие программных компонентов.</li>
+        <li>Участвовал в тестировании и отладке ПО.</li>
+      </ul>
+    </div>
+
+    <div class="project">
+      <h3>Разработка инфраструктуры автоматизированных систем</h3>
+      <ul>
+        <li>Администрирование и настройка Linux-систем.</li>
+        <li>Автоматизация настройки окружений с использованием Ansible.</li>
+        <li>Контейнеризация сервисов с помощью Docker, развёртывание многоконтейнерных приложений через Docker Compose.</li>
+        <li>Организация взаимодействия сервисов по MQTT.</li>
+        <li>Настройка мониторинга с использованием Grafana.</li>
+      </ul>
+    </div>
+
+    <div class="project">
+      <h3>Разбор потока Protocol Buffers сообщений</h3>
+      <ul>
+        <li>Разработал высокопроизводительный парсер length-prefixed Protocol Buffers на C++.</li>
+        <li>Реализовал обработку потоковых данных.</li>
+        <li>Выполнял восстановление границ сообщений при последовательной обработке входного потока.</li>
+      </ul>
+    </div>
+
+    <div class="project">
+      <h3>Музыкальный визуализатор</h3>
+      <ul>
+        <li>Разработал приложение на C++.</li>
+        <li>Реализовал обработку аудиосигнала.</li>
+        <li>Выполнил визуализацию спектра аудиосигнала в реальном времени.</li>
+      </ul>
+    </div>
+
+    <div class="project">
+      <h3>Амплитудно-модулированный UART</h3>
+      <ul>
+        <li>Разрабатывал встроенное ПО для STM32.</li>
+        <li>Реализовал обмен данными по модифицированному UART.</li>
+        <li>Занимался отладкой алгоритмов передачи и обработки данных.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ОБРАЗОВАНИЕ -->
+  <section id="education">
+    <h2>Образование</h2>
+
+    <div class="job">
+      <div class="job-head">
+        <div>
+          <h3>Санкт-Петербургский политехнический университет Петра Великого</h3>
+          <div class="muted">Магистратура · Факультет управления и информационных технологий<br>«Киберфизические системы и технологии»</div>
+        </div>
+        <div class="muted">2027</div>
+      </div>
+    </div>
+
+    <div class="job">
+      <div class="job-head">
+        <div>
+          <h3>Санкт-Петербургский политехнический университет Петра Великого</h3>
+          <div class="muted">Бакалавриат с отличием · Факультет управления и информационных технологий<br>«Управление и информатика в технических системах» (инженер)</div>
+        </div>
+        <div class="muted">2025</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ДОПОЛНИТЕЛЬНО -->
+  <section id="extra">
+    <h2>Дополнительно</h2>
+    <div class="grid-2">
+      <div class="item"><strong>Проживание:</strong> Санкт-Петербург, м. Гражданский проспект</div>
+      <div class="item"><strong>Гражданство:</strong> Россия, есть разрешение на работу</div>
+      <div class="item"><strong>Переезд:</strong> не готов; к редким командировкам — готов</div>
+      <div class="item"><strong>Водительские права:</strong> категория B, есть автомобиль</div>
+    </div>
+  </section>
+
+  <footer>
+    Резюме обновлено 4 сентября 2026 · Худобин Андрей Владимирович
+  </footer>
+
+</main>
+
+</body>
+</html>
