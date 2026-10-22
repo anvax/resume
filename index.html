@@ -25,10 +25,10 @@
     color: var(--text-main);
     font-family: var(--font-sans);
     line-height: 1.6;
-    overflow-x: hidden;
+    overflow: hidden; /* Скрываем скролл, так как экраны фиксированы */
   }
 
-  /* Интерактивный фон */
+  /* Фон */
   #matrix-bg {
     position: fixed;
     top: 0; left: 0;
@@ -38,33 +38,57 @@
     pointer-events: none;
   }
 
-  /* --- ЭКРАН ЗАСТАВКИ (BOOT SCREEN) --- */
-  #boot-screen {
+  /* --- СИСТЕМА ЭКРАНОВ (SPA) --- */
+  .screen {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100vh;
-    background: var(--bg-dark);
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
-    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
-    padding: 20px;
-    text-align: center;
+    transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.6s ease;
+    overflow-y: auto; /* Внутренний скролл, если контент не влезает */
+    background: var(--bg-dark);
+    z-index: 1;
   }
 
-  #boot-screen.slide-up {
-    transform: translateY(-100%);
+  /* Скрытые экраны уезжают вправо и становятся прозрачными */
+  .screen.hidden-right {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  /* Экраны, которые ушли влево */
+  .screen.hidden-left {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .content-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px 0;
+  }
+
+  /* --- ЗАСТАВКА --- */
+  #screen-boot {
+    background: var(--bg-dark);
+    z-index: 9999;
   }
 
   .boot-terminal {
-    max-width: 600px;
     width: 100%;
+    max-width: 500px;
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 40px 20px;
+    text-align: center;
     box-shadow: 0 0 30px rgba(0, 255, 170, 0.1);
   }
 
@@ -72,30 +96,29 @@
     font-family: var(--font-mono);
     color: var(--accent);
     font-size: 0.9rem;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     text-align: left;
-    height: 80px;
+    min-height: 100px;
   }
 
   .start-btn {
     background: transparent;
     color: var(--accent);
     border: 1px solid var(--accent);
-    padding: 12px 30px;
+    padding: 15px 30px;
     font-family: var(--font-mono);
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.3s;
     border-radius: 4px;
     text-transform: uppercase;
-    letter-spacing: 2px;
     animation: pulse 2s infinite;
+    width: 100%;
   }
 
   .start-btn:hover {
     background: var(--accent);
     color: var(--bg-dark);
-    box-shadow: 0 0 20px rgba(0, 255, 170, 0.4);
   }
 
   @keyframes pulse {
@@ -104,292 +127,122 @@
     100% { box-shadow: 0 0 0 0 rgba(0, 255, 170, 0); }
   }
 
-  /* --- ОСНОВНОЙ КОНТЕНТ --- */
-  #main-content {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 1s ease 0.5s;
-  }
-
-  #main-content.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-  }
-
-  .hero-section {
-    min-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .terminal-window {
+  /* --- КАРТОЧКИ КОНТЕНТА --- */
+  .card {
     background: var(--bg-panel);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(0, 255, 170, 0.05);
+    border-radius: 12px;
+    padding: 30px;
     width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   }
 
-  .terminal-header {
-    background: #161b22;
-    padding: 10px 15px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
-  .dot.red { background: #ff5f56; }
-  .dot.yellow { background: #ffbd2e; }
-  .dot.green { background: #27c93f; }
-
-  .terminal-title {
-    margin-left: auto;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-  }
-
-  .terminal-body {
-    padding: 20px;
-    font-family: var(--font-mono);
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
-  }
-
-  .prompt { color: var(--accent); font-weight: bold; }
-  
-  h1 {
-    font-size: clamp(1.8rem, 5vw, 2.5rem);
-    margin: 15px 0;
+  /* Главная */
+  .main-title {
+    font-size: clamp(2rem, 6vw, 3rem);
     color: #fff;
-    font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1.2;
+    line-height: 1.1;
+    margin-bottom: 10px;
   }
-
-  .role {
-    color: var(--accent-blue);
-    font-size: clamp(1rem, 3vw, 1.2rem);
-    margin-bottom: 25px;
-    display: inline-block;
-  }
-
-  .typewriter {
-    overflow: hidden;
-    border-right: .15em solid var(--accent);
-    white-space: nowrap;
-    margin: 0 auto;
-    letter-spacing: .05em;
-    animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
-  }
-
-  @keyframes typing { from { width: 0 } to { width: 100% } }
-  @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--accent) } }
-
-  .contact-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-  }
-
-  .btn {
-    text-decoration: none;
-    color: var(--text-main);
-    font-family: var(--font-mono);
-    border: 1px solid var(--border);
-    padding: 10px 15px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    background: rgba(255,255,255,0.02);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    text-align: center;
-  }
-
-  .btn:hover, .btn:active {
-    border-color: var(--accent);
-    color: var(--accent);
-    box-shadow: 0 0 15px rgba(0, 255, 170, 0.2);
-    transform: translateY(-2px);
-  }
-
-  .btn.primary {
-    background: var(--accent);
-    color: var(--bg-dark);
-    border-color: var(--accent);
-    font-weight: bold;
-  }
-
-  /* --- ИНТЕРАКТИВНЫЕ БЛОКИ --- */
-  .interactive-section {
-    margin-bottom: 2rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--bg-panel);
-    overflow: hidden;
-    transition: all 0.3s ease;
-  }
-
-  .section-header {
-    padding: 20px;
-    background: #11161f;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-    transition: background 0.3s;
-  }
-
-  .section-header:hover {
-    background: #161b22;
-  }
-
-  .section-header h2 {
-    font-family: var(--font-mono);
-    color: var(--accent);
-    font-size: clamp(1.1rem, 4vw, 1.4rem);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-  }
-
-  .section-header h2::before {
-    content: '>_';
-    color: var(--text-muted);
-  }
-
-  .toggle-icon {
+  
+  .main-subtitle {
     color: var(--accent);
     font-family: var(--font-mono);
     font-size: 1.2rem;
-    transition: transform 0.4s ease;
+    margin-bottom: 30px;
   }
 
-  .interactive-section.open .toggle-icon {
-    transform: rotate(90deg);
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin-top: 30px;
   }
 
-  .section-content {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
-    padding: 0 20px;
+  .nav-btn {
+    background: rgba(88, 166, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 20px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    text-align: center;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
   }
 
-  .interactive-section.open .section-content {
-    max-height: 3000px; /* Достаточно для любого контента */
-    opacity: 1;
-    padding: 20px;
+  .nav-btn span { font-size: 1.5rem; }
+  
+  .nav-btn:hover {
+    border-color: var(--accent);
+    background: rgba(0, 255, 170, 0.1);
+    color: var(--accent);
+    transform: translateY(-3px);
   }
 
-  /* Внутренние стили (навыки, таймлайн, проекты) */
+  /* Заголовки внутренних страниц */
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+  }
+
+  .page-title {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+  }
+
+  .back-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover {
+    color: #fff;
+    border-color: #fff;
+  }
+
+  /* Навыки */
   .skills-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    justify-content: center;
   }
 
   .skill-tag {
     background: rgba(88, 166, 255, 0.1);
     color: var(--text-main);
     border: 1px solid rgba(88, 166, 255, 0.2);
-    padding: 6px 12px;
+    padding: 8px 16px;
     border-radius: 20px;
     font-family: var(--font-mono);
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-    cursor: default;
-    white-space: nowrap;
+    font-size: 0.9rem;
+    transition: all 0.2s;
   }
 
   .skill-tag:hover {
-    background: rgba(0, 255, 170, 0.1);
+    background: rgba(0, 255, 170, 0.2);
     border-color: var(--accent);
     color: var(--accent);
-    transform: scale(1.05);
   }
 
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 15px;
-  }
-
-  .project-card {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .project-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 4px; height: 100%;
-    background: var(--accent-blue);
-    transform: scaleY(0);
-    transform-origin: bottom;
-    transition: transform 0.3s ease;
-  }
-
-  .project-card:hover {
-    border-color: var(--border);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-    transform: translateY(-3px);
-  }
-
-  .project-card:hover::before {
-    transform: scaleY(1);
-  }
-
-  .project-card h3 {
-    color: #fff;
-    font-size: 1rem;
-    margin-bottom: 10px;
-    font-family: var(--font-mono);
-    line-height: 1.4;
-  }
-
-  .project-card ul {
-    list-style: none;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-  }
-
-  .project-card li {
-    margin-bottom: 6px;
-    padding-left: 15px;
-    position: relative;
-  }
-
-  .project-card li::before {
-    content: '↳';
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-  }
-
+  /* Таймлайн */
   .timeline {
     border-left: 2px solid var(--border);
     padding-left: 20px;
@@ -398,74 +251,56 @@
 
   .timeline-item {
     position: relative;
-    margin-bottom: 25px;
-  }
-  
-  .timeline-item:last-child {
-    margin-bottom: 0;
+    margin-bottom: 30px;
   }
 
   .timeline-item::before {
     content: '';
     position: absolute;
-    left: -26px;
+    left: -27px;
     top: 5px;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: var(--accent);
     box-shadow: 0 0 10px var(--accent);
   }
 
-  .timeline-date {
-    font-family: var(--font-mono);
-    color: var(--accent-blue);
-    font-size: 0.85rem;
-    margin-bottom: 5px;
-  }
+  .timeline-date { color: var(--accent-blue); font-family: var(--font-mono); font-size: 0.9rem; }
+  .timeline-title { font-size: 1.2rem; color: #fff; font-weight: bold; margin-top: 5px; }
+  .timeline-desc { color: var(--text-muted); font-size: 0.95rem; margin-top: 10px; }
+  .timeline-desc li { margin-left: 20px; margin-bottom: 5px; }
 
-  .timeline-title {
-    font-size: 1.1rem;
-    color: #fff;
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
-
-  .timeline-subtitle {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-  }
-
-  .timeline-desc {
-    font-size: 0.9rem;
-    color: var(--text-main);
+  /* Контакты */
+  .contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
   }
   
-  .timeline-desc li {
-      margin-bottom: 5px;
-      margin-left: 15px;
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--text-main);
+    text-decoration: none;
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.3s;
+  }
+  
+  .contact-item:hover {
+    background: rgba(0,255,170,0.05);
+    border-color: var(--accent);
   }
 
-  footer {
-    text-align: center;
-    padding: 30px 20px;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    border-top: 1px solid var(--border);
-  }
-
-  /* Фиксы для мобильных */
+  /* Адаптив */
   @media (max-width: 600px) {
-    .contact-links { flex-direction: column; width: 100%; }
-    .btn { width: 100%; }
-    .typewriter { white-space: normal; border-right: none; animation: none; }
-    .terminal-body { padding: 15px; }
-    .skills-grid { justify-content: center; }
-    .section-header { padding: 15px; }
-    .section-content { padding: 0 15px; }
-    .interactive-section.open .section-content { padding: 15px; }
+    .card { padding: 20px 15px; }
+    .nav-grid { grid-template-columns: 1fr 1fr; }
+    .screen { padding: 10px; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
   }
 </style>
 </head>
@@ -473,273 +308,242 @@
 
 <canvas id="matrix-bg"></canvas>
 
-<!-- ЭКРАН ЗАСТАВКИ -->
-<div id="boot-screen">
+<!-- ЭКРАН 0: ЗАСТАВКА -->
+<div id="screen-boot" class="screen">
   <div class="boot-terminal">
     <div class="boot-text">
-      <div id="boot-logs">> Инициализация ядра...<br>> Загрузка профиля пользователя...</div>
+      <div id="boot-logs">> Инициализация системы...<br></div>
     </div>
-    <button class="start-btn" onclick="startSystem()">Запустить систему</button>
+    <button class="start-btn" onclick="goToScreen('screen-main')">Войти в систему</button>
   </div>
 </div>
 
-<!-- ОСНОВНОЙ КОНТЕНТ -->
-<div id="main-content">
-  <div class="container">
-    
-    <header class="hero-section">
-      <div class="terminal-window">
-        <div class="terminal-header">
-          <div class="dot red"></div>
-          <div class="dot yellow"></div>
-          <div class="dot green"></div>
-          <div class="terminal-title">anvax@system:~</div>
-        </div>
-        <div class="terminal-body">
-          <div><span class="prompt">anvax@system:~$</span> ./init_profile.sh</div>
-          <h1>Худобин Андрей</h1>
-          <div class="role typewriter">Инженер-программист</div>
-          <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">
-            Разрабатываю ПО для промышленной автоматизации, настраиваю Linux-инфраструктуру и программирую микроконтроллеры.
-          </p>
-          <div class="contact-links">
-            <a href="mailto:a2.khudobin3@gmail.com" class="btn primary">📩 Email</a>
-            <a href="https://t.me/anvax" target="_blank" class="btn">✈️ Telegram</a>
-            <a href="tel:+79117285089" class="btn">📞 Позвонить</a>
-          </div>
-        </div>
-      </div>
-    </header>
+<!-- ЭКРАН 1: ГЛАВНАЯ -->
+<div id="screen-main" class="screen hidden-right">
+  <div class="content-wrapper">
+    <div class="card" style="text-align: center;">
+      <div style="font-family: var(--font-mono); color: var(--accent); margin-bottom: 10px;">[ USER_PROFILE LOADED ]</div>
+      <h1 class="main-title">Худобин Андрей</h1>
+      <div class="main-subtitle">Инженер-программист</div>
+      
+      <p style="color: var(--text-muted); margin-bottom: 20px;">
+        Добро пожаловать в интерактивное портфолио. Выберите раздел для просмотра.
+      </p>
 
-    <!-- ИНТЕРАКТИВНЫЙ БЛОК: ОБО МНЕ -->
-    <div class="interactive-section open">
-      <div class="section-header" onclick="toggleSection(this)">
-        <h2>Обо мне</h2>
-        <span class="toggle-icon">▶</span>
-      </div>
-      <div class="section-content">
-        <p style="margin-bottom: 10px; font-size: 0.95rem;">
-          Выпускник <strong>СПбПУ Петра Великого</strong> с отличием по направлению «Управление в технических системах». Обучаюсь в магистратуре по направлению «Киберфизические системы и технологии».
-        </p>
-        <p style="font-size: 0.95rem;">
-          Имею опыт разработки программного обеспечения для автоматизированных систем, реализации логики обработки сигналов и работы с промышленными технологиями. Работал с <strong>C++, Python, Linux</strong> и промышленными протоколами.
-        </p>
+      <div class="nav-grid">
+        <button class="nav-btn" onclick="goToScreen('screen-skills')"><span>⚙️</span> Навыки</button>
+        <button class="nav-btn" onclick="goToScreen('screen-exp')"><span>💼</span> Опыт</button>
+        <button class="nav-btn" onclick="goToScreen('screen-projects')"><span>🚀</span> Проекты</button>
+        <button class="nav-btn" onclick="goToScreen('screen-contacts')"><span>📞</span> Контакты</button>
       </div>
     </div>
-
-    <!-- ИНТЕРАКТИВНЫЙ БЛОК: НАВЫКИ -->
-    <div class="interactive-section">
-      <div class="section-header" onclick="toggleSection(this)">
-        <h2>Стек технологий</h2>
-        <span class="toggle-icon">▶</span>
-      </div>
-      <div class="section-content">
-        <div class="skills-grid">
-          <span class="skill-tag">C++</span>
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">Linux</span>
-          <span class="skill-tag">Docker</span>
-          <span class="skill-tag">Ansible</span>
-          <span class="skill-tag">Git</span>
-          <span class="skill-tag">MATLAB / Simulink</span>
-          <span class="skill-tag">CODESYS</span>
-          <span class="skill-tag">SCADA</span>
-          <span class="skill-tag">STM32</span>
-          <span class="skill-tag">Siemens PLC</span>
-          <span class="skill-tag">Modbus RTU/TCP</span>
-          <span class="skill-tag">OPC UA</span>
-          <span class="skill-tag">MQTT</span>
-          <span class="skill-tag">Grafana</span>
-          <span class="skill-tag">Английский (C1)</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ИНТЕРАКТИВНЫЙ БЛОК: ОПЫТ -->
-    <div class="interactive-section">
-      <div class="section-header" onclick="toggleSection(this)">
-        <h2>Опыт работы</h2>
-        <span class="toggle-icon">▶</span>
-      </div>
-      <div class="section-content">
-        <div class="timeline">
-          <div class="timeline-item">
-            <div class="timeline-date">Июль 2024 — Настоящее время</div>
-            <div class="timeline-title">НПФ «Система-Сервис»</div>
-            <div class="timeline-subtitle">Инженер</div>
-            <ul class="timeline-desc">
-              <li>Разработка ПО для контроллеров (C++/ST).</li>
-              <li>Алгоритмы управления: блок-схемы и преобразование в код.</li>
-              <li>Разработка мнемосхем SCADA.</li>
-              <li>Драйверы обмена (Modbus RTU/TCP).</li>
-            </ul>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">Июль 2023 — Июль 2024</div>
-            <div class="timeline-title">НИЦ СПб ЭТУ</div>
-            <div class="timeline-subtitle">Техник-программист</div>
-            <ul class="timeline-desc">
-              <li>Тестовые задания по C++ и микроконтроллерам.</li>
-              <li>Моделирование СУ электроприводом в MATLAB.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ИНТЕРАКТИВНЫЙ БЛОК: ПРОЕКТЫ -->
-    <div class="interactive-section">
-      <div class="section-header" onclick="toggleSection(this)">
-        <h2>Ключевые проекты</h2>
-        <span class="toggle-icon">▶</span>
-      </div>
-      <div class="section-content">
-        <div class="projects-grid">
-          
-          <div class="project-card">
-            <h3>ВКР: Управление вентиляцией ГПА</h3>
-            <ul>
-              <li>Разработка ПО системы управления.</li>
-              <li>Реализация алгоритмов обработки сигналов.</li>
-              <li>Настройка имитационного режима.</li>
-            </ul>
-          </div>
-
-          <div class="project-card">
-            <h3>Инфраструктура автоматизированных систем</h3>
-            <ul>
-              <li>Настройка Linux, Ansible.</li>
-              <li>Контейнеризация (Docker).</li>
-              <li>Взаимодействие по MQTT, Grafana.</li>
-            </ul>
-          </div>
-
-          <div class="project-card">
-            <h3>Парсер Protocol Buffers (C++)</h3>
-            <ul>
-              <li>Высокопроизводительный парсер.</li>
-              <li>Обработка потоковых данных.</li>
-            </ul>
-          </div>
-
-          <div class="project-card">
-            <h3>Амплитудно-модулированный UART</h3>
-            <ul>
-              <li>Embedded ПО для STM32.</li>
-              <li>Модифицированный UART.</li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- ИНТЕРАКТИВНЫЙ БЛОК: ОБРАЗОВАНИЕ -->
-    <div class="interactive-section">
-      <div class="section-header" onclick="toggleSection(this)">
-        <h2>Образование</h2>
-        <span class="toggle-icon">▶</span>
-      </div>
-      <div class="section-content">
-        <div class="timeline">
-          <div class="timeline-item">
-            <div class="timeline-date">2025 — 2027</div>
-            <div class="timeline-title">СПбПУ Петра Великого</div>
-            <div class="timeline-subtitle">Магистратура: Киберфизические системы</div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">2021 — 2025</div>
-            <div class="timeline-title">СПбПУ Петра Великого</div>
-            <div class="timeline-subtitle">Бакалавриат (с отличием): Управление в тех. системах</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
+</div>
 
-  <footer>
-    <p>[ SYSTEM READY ]</p>
-    <p style="margin-top: 10px;">© 2026 Худобин Андрей.</p>
-  </footer>
+<!-- ЭКРАН 2: НАВЫКИ -->
+<div id="screen-skills" class="screen hidden-right">
+  <div class="content-wrapper">
+    <div class="card">
+      <div class="page-header">
+        <div class="page-title">> Стек технологий</div>
+        <button class="back-btn" onclick="goBack('screen-main')">← На главную</button>
+      </div>
+      <div class="skills-grid">
+        <span class="skill-tag">C++</span>
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">Linux</span>
+        <span class="skill-tag">Docker</span>
+        <span class="skill-tag">Ansible</span>
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">MATLAB / Simulink</span>
+        <span class="skill-tag">CODESYS</span>
+        <span class="skill-tag">SCADA</span>
+        <span class="skill-tag">STM32</span>
+        <span class="skill-tag">Siemens PLC</span>
+        <span class="skill-tag">Modbus RTU/TCP</span>
+        <span class="skill-tag">OPC UA</span>
+        <span class="skill-tag">MQTT</span>
+        <span class="skill-tag">Grafana</span>
+        <span class="skill-tag">Английский (C1)</span>
+      </div>
+      <p style="margin-top: 30px; color: var(--text-muted); font-size: 0.9rem;">
+        <strong>Образование:</strong> СПбПУ Петра Великого (Бакалавриат с отличием, Магистратура).
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 3: ОПЫТ -->
+<div id="screen-exp" class="screen hidden-right">
+  <div class="content-wrapper">
+    <div class="card">
+      <div class="page-header">
+        <div class="page-title">> Опыт работы</div>
+        <button class="back-btn" onclick="goBack('screen-main')">← На главную</button>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">Июль 2024 — Настоящее время</div>
+          <div class="timeline-title">НПФ «Система-Сервис»</div>
+          <div class="timeline-desc">Инженер. Разработка ПО для контроллеров (C++/ST), алгоритмы управления, мнемосхемы SCADA, драйверы Modbus.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Июль 2023 — Июль 2024</div>
+          <div class="timeline-title">НИЦ СПб ЭТУ</div>
+          <div class="timeline-desc">Техник-программист. Тестовые задания по C++, микроконтроллерам. Моделирование СУ электроприводом в MATLAB.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 4: ПРОЕКТЫ -->
+<div id="screen-projects" class="screen hidden-right">
+  <div class="content-wrapper">
+    <div class="card">
+      <div class="page-header">
+        <div class="page-title">> Ключевые проекты</div>
+        <button class="back-btn" onclick="goBack('screen-main')">← На главную</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 15px;">
+        <div style="border: 1px solid var(--border); padding: 15px; border-radius: 8px;">
+          <h3 style="color: #fff; margin-bottom: 5px;">ВКР: Управление вентиляцией ГПА</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Разработка ПО, алгоритмы обработки сигналов, имитационный режим.</p>
+        </div>
+        <div style="border: 1px solid var(--border); padding: 15px; border-radius: 8px;">
+          <h3 style="color: #fff; margin-bottom: 5px;">Инфраструктура автоматизированных систем</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Linux, Ansible, Docker, MQTT, мониторинг Grafana.</p>
+        </div>
+        <div style="border: 1px solid var(--border); padding: 15px; border-radius: 8px;">
+          <h3 style="color: #fff; margin-bottom: 5px;">Парсер Protocol Buffers (C++)</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Высокопроизводительная обработка потоковых данных.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ЭКРАН 5: КОНТАКТЫ -->
+<div id="screen-contacts" class="screen hidden-right">
+  <div class="content-wrapper">
+    <div class="card">
+      <div class="page-header">
+        <div class="page-title">> Связаться со мной</div>
+        <button class="back-btn" onclick="goBack('screen-main')">← На главную</button>
+      </div>
+      <div class="contact-list">
+        <a href="mailto:a2.khudobin3@gmail.com" class="contact-item">
+          <span style="font-size: 1.5rem;">📩</span>
+          <div>
+            <div style="color: #fff; font-weight: bold;">Email</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">a2.khudobin3@gmail.com</div>
+          </div>
+        </a>
+        <a href="https://t.me/anvax" target="_blank" class="contact-item">
+          <span style="font-size: 1.5rem;">✈️</span>
+          <div>
+            <div style="color: #fff; font-weight: bold;">Telegram</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">@anvax</div>
+          </div>
+        </a>
+        <a href="tel:+79117285089" class="contact-item">
+          <span style="font-size: 1.5rem;">📞</span>
+          <div>
+            <div style="color: #fff; font-weight: bold;">Телефон</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">+7 (911) 728-50-89</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-  // --- 1. Логика экрана заставки ---
-  function startSystem() {
-    const bootScreen = document.getElementById('boot-screen');
-    const mainContent = document.getElementById('main-content');
+  // --- Логика переключения экранов (SPA) ---
+  let currentScreen = 'screen-boot';
+
+  function goToScreen(targetId) {
+    const currentEl = document.getElementById(currentScreen);
+    const targetEl = document.getElementById(targetId);
+
+    if (currentScreen === targetId) return;
+
+    // Текущий экран уезжает влево
+    currentEl.classList.remove('hidden-right');
+    currentEl.classList.add('hidden-left');
+
+    // Целевой экран выезжает слева направо
+    targetEl.classList.remove('hidden-left');
+    targetEl.classList.remove('hidden-right'); // Убираем скрытие, чтобы он появился
     
-    // Уезжаем вверх
-    bootScreen.classList.add('slide-up');
-    
-    // Показываем контент
+    // Небольшой хак для анимации (сброс)
+    targetEl.style.transform = 'translateX(100%)';
     setTimeout(() => {
-      mainContent.classList.add('active');
-      document.body.style.overflow = 'auto'; // Возвращаем скролл
-    }, 500);
+      targetEl.style.transform = 'translateX(0)';
+      targetEl.style.opacity = '1';
+    }, 50);
+
+    currentScreen = targetId;
   }
 
-  // Блокируем скролл пока висит заставка
-  document.body.style.overflow = 'hidden';
+  function goBack(targetId) {
+    const currentEl = document.getElementById(currentScreen);
+    const targetEl = document.getElementById(targetId);
 
-  // Симуляция загрузки текста на заставке
+    // Текущий экран уезжает вправо
+    currentEl.classList.add('hidden-right');
+
+    // Целевой экран выезжает справа налево
+    targetEl.classList.remove('hidden-left');
+    targetEl.style.transform = 'translateX(-100%)';
+    setTimeout(() => {
+      targetEl.style.transform = 'translateX(0)';
+      targetEl.style.opacity = '1';
+    }, 50);
+
+    currentScreen = targetId;
+  }
+
+  // Логика загрузки на заставке
   const logs = [
-    "> Инициализация ядра...",
     "> Загрузка профиля пользователя...",
-    "> Проверка соединения... OK",
-    "> Готово к работе."
+    "> Проверка модулей... OK",
+    "> Система готова."
   ];
   let logIndex = 0;
   const logElement = document.getElementById('boot-logs');
   
   setInterval(() => {
-    if (logIndex < logs.length - 1) {
+    if (logIndex < logs.length) {
+      logElement.innerHTML += logs[logIndex] + "<br>";
       logIndex++;
-      logElement.innerHTML += "<br>" + logs[logIndex];
     }
-  }, 800);
+  }, 600);
 
-  // --- 2. Аккордеон для блоков (интерактив) ---
-  function toggleSection(header) {
-    const section = header.parentElement;
-    section.classList.toggle('open');
-  }
-
-  // --- 3. Анимация фона (Matrix Rain) ---
+  // --- Фон (Matrix Rain) ---
   const canvas = document.getElementById('matrix-bg');
   const ctx = canvas.getContext('2d');
-
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>[]{}/*-+';
   const fontSize = 14;
   const columns = canvas.width / fontSize;
-
   const drops = [];
   for (let x = 0; x < columns; x++) drops[x] = 1;
 
   function draw() {
     ctx.fillStyle = 'rgba(5, 8, 15, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     ctx.fillStyle = '#00ffaa';
     ctx.font = fontSize + 'px monospace';
-
     for (let i = 0; i < drops.length; i++) {
       const text = letters.charAt(Math.floor(Math.random() * letters.length));
       ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
       drops[i]++;
     }
   }
-
   setInterval(draw, 50);
-
   window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
