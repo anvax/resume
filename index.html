@@ -11,8 +11,8 @@
     --bg-panel: #0d111a;
     --text-main: #c9d1d9;
     --text-muted: #8b949e;
-    --accent: #00ffaa; /* Неоновый зеленый */
-    --accent-blue: #58a6ff; /* Голубой */
+    --accent: #00ffaa;
+    --accent-blue: #58a6ff;
     --border: #30363d;
     --font-mono: 'Fira Code', monospace;
     --font-sans: 'Inter', sans-serif;
@@ -38,24 +38,104 @@
     pointer-events: none;
   }
 
-  /* Hero Section */
-  header {
-    min-height: 100vh;
+  /* --- ЭКРАН ЗАСТАВКИ (BOOT SCREEN) --- */
+  #boot-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background: var(--bg-dark);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 2rem;
-    position: relative;
+    align-items: center;
+    z-index: 9999;
+    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+    padding: 20px;
+    text-align: center;
   }
 
-  .terminal-window {
-    max-width: 800px;
-    margin: 0 auto;
+  #boot-screen.slide-up {
+    transform: translateY(-100%);
+  }
+
+  .boot-terminal {
+    max-width: 600px;
+    width: 100%;
     background: var(--bg-panel);
     border: 1px solid var(--border);
     border-radius: 8px;
-    box-shadow: 0 0 30px rgba(0, 255, 170, 0.05);
+    padding: 40px 20px;
+    box-shadow: 0 0 30px rgba(0, 255, 170, 0.1);
+  }
+
+  .boot-text {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    text-align: left;
+    height: 80px;
+  }
+
+  .start-btn {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 12px 30px;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: pulse 2s infinite;
+  }
+
+  .start-btn:hover {
+    background: var(--accent);
+    color: var(--bg-dark);
+    box-shadow: 0 0 20px rgba(0, 255, 170, 0.4);
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 255, 170, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(0, 255, 170, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 255, 170, 0); }
+  }
+
+  /* --- ОСНОВНОЙ КОНТЕНТ --- */
+  #main-content {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease 0.5s;
+  }
+
+  #main-content.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .hero-section {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .terminal-window {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
     overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 255, 170, 0.05);
+    width: 100%;
   }
 
   .terminal-header {
@@ -66,7 +146,7 @@
     border-bottom: 1px solid var(--border);
   }
 
-  .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; flex-shrink: 0; }
   .dot.red { background: #ff5f56; }
   .dot.yellow { background: #ffbd2e; }
   .dot.green { background: #27c93f; }
@@ -79,28 +159,31 @@
   }
 
   .terminal-body {
-    padding: 30px;
+    padding: 20px;
     font-family: var(--font-mono);
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
   }
 
   .prompt { color: var(--accent); font-weight: bold; }
   
   h1 {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
     margin: 15px 0;
     color: #fff;
     font-weight: 800;
     letter-spacing: -1px;
+    line-height: 1.2;
   }
 
   .role {
     color: var(--accent-blue);
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 3vw, 1.2rem);
     margin-bottom: 25px;
     display: inline-block;
   }
 
-  /* Эффект печатной машинки */
   .typewriter {
     overflow: hidden;
     border-right: .15em solid var(--accent);
@@ -116,7 +199,7 @@
   .contact-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 10px;
     margin-top: 20px;
   }
 
@@ -125,16 +208,19 @@
     color: var(--text-main);
     font-family: var(--font-mono);
     border: 1px solid var(--border);
-    padding: 10px 20px;
+    padding: 10px 15px;
     border-radius: 6px;
     transition: all 0.3s ease;
     background: rgba(255,255,255,0.02);
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    font-size: 0.9rem;
+    text-align: center;
   }
 
-  .btn:hover {
+  .btn:hover, .btn:active {
     border-color: var(--accent);
     color: var(--accent);
     box-shadow: 0 0 15px rgba(0, 255, 170, 0.2);
@@ -147,69 +233,90 @@
     border-color: var(--accent);
     font-weight: bold;
   }
-  .btn.primary:hover {
-    background: #00cc88;
-    box-shadow: 0 0 20px rgba(0, 255, 170, 0.4);
+
+  /* --- ИНТЕРАКТИВНЫЕ БЛОКИ --- */
+  .interactive-section {
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-panel);
+    overflow: hidden;
+    transition: all 0.3s ease;
   }
 
-  /* Основной контент */
-  .container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 4rem 2rem;
+  .section-header {
+    padding: 20px;
+    background: #11161f;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.3s;
   }
 
-  section {
-    margin-bottom: 6rem;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+  .section-header:hover {
+    background: #161b22;
   }
 
-  section.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  h2 {
+  .section-header h2 {
     font-family: var(--font-mono);
     color: var(--accent);
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
+    font-size: clamp(1.1rem, 4vw, 1.4rem);
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
+    margin: 0;
   }
 
-  h2::before {
+  .section-header h2::before {
     content: '>_';
     color: var(--text-muted);
   }
-  
-  h2::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+
+  .toggle-icon {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    transition: transform 0.4s ease;
   }
 
-  /* Сетка навыков */
+  .interactive-section.open .toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .section-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease;
+    padding: 0 20px;
+  }
+
+  .interactive-section.open .section-content {
+    max-height: 3000px; /* Достаточно для любого контента */
+    opacity: 1;
+    padding: 20px;
+  }
+
+  /* Внутренние стили (навыки, таймлайн, проекты) */
   .skills-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
   }
 
   .skill-tag {
     background: rgba(88, 166, 255, 0.1);
     color: var(--text-main);
     border: 1px solid rgba(88, 166, 255, 0.2);
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-radius: 20px;
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     transition: all 0.2s ease;
     cursor: default;
+    white-space: nowrap;
   }
 
   .skill-tag:hover {
@@ -219,18 +326,17 @@
     transform: scale(1.05);
   }
 
-  /* Карточки проектов */
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
   }
 
   .project-card {
-    background: var(--bg-panel);
+    background: rgba(255,255,255,0.02);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 25px;
+    padding: 20px;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -249,8 +355,8 @@
 
   .project-card:hover {
     border-color: var(--border);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    transform: translateY(-3px);
   }
 
   .project-card:hover::before {
@@ -259,20 +365,21 @@
 
   .project-card h3 {
     color: #fff;
-    font-size: 1.1rem;
-    margin-bottom: 15px;
+    font-size: 1rem;
+    margin-bottom: 10px;
     font-family: var(--font-mono);
+    line-height: 1.4;
   }
 
   .project-card ul {
     list-style: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
   }
 
   .project-card li {
-    margin-bottom: 8px;
-    padding-left: 20px;
+    margin-bottom: 6px;
+    padding-left: 15px;
     position: relative;
   }
 
@@ -283,22 +390,25 @@
     color: var(--accent);
   }
 
-  /* Таймлайн опыта */
   .timeline {
     border-left: 2px solid var(--border);
-    padding-left: 30px;
+    padding-left: 20px;
     margin-left: 10px;
   }
 
   .timeline-item {
     position: relative;
-    margin-bottom: 40px;
+    margin-bottom: 25px;
+  }
+  
+  .timeline-item:last-child {
+    margin-bottom: 0;
   }
 
   .timeline-item::before {
     content: '';
     position: absolute;
-    left: -36px;
+    left: -26px;
     top: 5px;
     width: 10px;
     height: 10px;
@@ -310,12 +420,12 @@
   .timeline-date {
     font-family: var(--font-mono);
     color: var(--accent-blue);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     margin-bottom: 5px;
   }
 
   .timeline-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #fff;
     font-weight: 600;
     margin-bottom: 5px;
@@ -323,36 +433,39 @@
 
   .timeline-subtitle {
     color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 15px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
   }
 
   .timeline-desc {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--text-main);
   }
   
   .timeline-desc li {
       margin-bottom: 5px;
-      margin-left: 20px;
+      margin-left: 15px;
   }
 
   footer {
     text-align: center;
-    padding: 40px;
-    border-top: 1px solid var(--border);
+    padding: 30px 20px;
     color: var(--text-muted);
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
   }
 
-  /* Адаптивность */
-  @media (max-width: 768px) {
-    h1 { font-size: 1.8rem; }
-    .terminal-body { padding: 20px; }
-    .contact-links { flex-direction: column; }
-    .btn { width: 100%; justify-content: center; }
-    section { margin-bottom: 4rem; }
+  /* Фиксы для мобильных */
+  @media (max-width: 600px) {
+    .contact-links { flex-direction: column; width: 100%; }
+    .btn { width: 100%; }
+    .typewriter { white-space: normal; border-right: none; animation: none; }
+    .terminal-body { padding: 15px; }
+    .skills-grid { justify-content: center; }
+    .section-header { padding: 15px; }
+    .section-content { padding: 0 15px; }
+    .interactive-section.open .section-content { padding: 15px; }
   }
 </style>
 </head>
@@ -360,197 +473,240 @@
 
 <canvas id="matrix-bg"></canvas>
 
-<header>
-  <div class="terminal-window">
-    <div class="terminal-header">
-      <div class="dot red"></div>
-      <div class="dot yellow"></div>
-      <div class="dot green"></div>
-      <div class="terminal-title">anvax@system:~</div>
+<!-- ЭКРАН ЗАСТАВКИ -->
+<div id="boot-screen">
+  <div class="boot-terminal">
+    <div class="boot-text">
+      <div id="boot-logs">> Инициализация ядра...<br>> Загрузка профиля пользователя...</div>
     </div>
-    <div class="terminal-body">
-      <div><span class="prompt">anvax@system:~$</span> ./init_profile.sh</div>
-      <h1>Худобин Андрей</h1>
-      <div class="role typewriter">Инженер-программист / Systems Engineer</div>
-      <p style="color: var(--text-muted); margin-bottom: 20px;">
-        Разрабатываю ПО для промышленной автоматизации, настраиваю Linux-инфраструктуру и программирую микроконтроллеры.
-      </p>
-      <div class="contact-links">
-        <a href="mailto:a2.khudobin3@gmail.com" class="btn primary">📩 Написать на Email</a>
-        <a href="https://t.me/anvax" target="_blank" class="btn">✈️ Telegram @anvax</a>
-        <a href="tel:+79117285089" class="btn">📞 +7 (911) 728-50-89</a>
-      </div>
-    </div>
+    <button class="start-btn" onclick="startSystem()">Запустить систему</button>
   </div>
-</header>
-
-<div class="container">
-
-  <section>
-    <h2>Обо мне</h2>
-    <p style="margin-bottom: 15px;">
-      Выпускник <strong>СПбПУ Петра Великого</strong> с отличием по направлению «Управление в технических системах». Обучаюсь в магистратуре по направлению «Киберфизические системы и технологии».
-    </p>
-    <p>
-      Имею опыт разработки программного обеспечения для автоматизированных систем, реализации логики обработки сигналов и работы с промышленными технологиями. В рамках работы и учебных проектов занимался разработкой программных компонентов на <strong>C++ и Python</strong>, настройкой и сопровождением <strong>Linux-систем</strong>, работой с промышленными протоколами и контроллерами. В учебных проектах использовал <strong>MATLAB/Simulink</strong> для моделирования систем управления.
-    </p>
-  </section>
-
-  <section>
-    <h2>Стек технологий</h2>
-    <div class="skills-grid">
-      <span class="skill-tag">C++</span>
-      <span class="skill-tag">Python</span>
-      <span class="skill-tag">Linux</span>
-      <span class="skill-tag">Docker</span>
-      <span class="skill-tag">Ansible</span>
-      <span class="skill-tag">Git</span>
-      <span class="skill-tag">MATLAB / Simulink</span>
-      <span class="skill-tag">CODESYS</span>
-      <span class="skill-tag">SCADA</span>
-      <span class="skill-tag">STM32</span>
-      <span class="skill-tag">Siemens PLC</span>
-      <span class="skill-tag">Schneider Modicon</span>
-      <span class="skill-tag">Modbus RTU/TCP</span>
-      <span class="skill-tag">OPC UA</span>
-      <span class="skill-tag">MQTT</span>
-      <span class="skill-tag">Grafana</span>
-      <span class="skill-tag">UML</span>
-      <span class="skill-tag">Английский (C1)</span>
-    </div>
-  </section>
-
-  <section>
-    <h2>Опыт работы</h2>
-    <div class="timeline">
-      
-      <div class="timeline-item">
-        <div class="timeline-date">Июль 2024 — Настоящее время</div>
-        <div class="timeline-title">НПФ «Система-Сервис»</div>
-        <div class="timeline-subtitle">Инженер</div>
-        <ul class="timeline-desc">
-          <li>Разработка ПО для контроллеров: реализация пользовательских алгоритмов и сборка проекта на C++/ST.</li>
-          <li>Разработка алгоритмов управления: графическое отображение алгоритмов в виде блок-схем и преобразование в C++/ST.</li>
-          <li>Разработка мнемосхем SCADA-системы.</li>
-          <li>Разработка ПО для панелей EKF, KEAZ, ОВЕН.</li>
-          <li>Разработка драйверов для обмена тегами с другими устройствами (Modbus RTU/TCP).</li>
-        </ul>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-date">Июль 2023 — Июль 2024</div>
-        <div class="timeline-title">НИЦ СПб ЭТУ</div>
-        <div class="timeline-subtitle">Техник-программист</div>
-        <ul class="timeline-desc">
-          <li>Проходил обучающие курсы, выполнял тестовые практические задания по C++ и микроконтроллерам.</li>
-          <li>Моделирование системы управления электроприводом в MATLAB.</li>
-        </ul>
-      </div>
-
-    </div>
-  </section>
-
-  <section>
-    <h2>Ключевые проекты</h2>
-    <div class="projects-grid">
-      
-      <div class="project-card">
-        <h3>ВКР: Управление вентиляцией ГПА</h3>
-        <ul>
-          <li>Разработка ПО системы управления.</li>
-          <li>Реализация алгоритмов обработки сигналов.</li>
-          <li>Работа с дискретными и аналоговыми параметрами.</li>
-          <li>Настройка имитационного режима для проверки логики.</li>
-        </ul>
-      </div>
-
-      <div class="project-card">
-        <h3>Инфраструктура автоматизированных систем</h3>
-        <ul>
-          <li>Администрирование и настройка Linux.</li>
-          <li>Автоматизация окружений (Ansible).</li>
-          <li>Контейнеризация (Docker, Docker Compose).</li>
-          <li>Взаимодействие сервисов по MQTT, мониторинг Grafana.</li>
-        </ul>
-      </div>
-
-      <div class="project-card">
-        <h3>Парсер Protocol Buffers (C++)</h3>
-        <ul>
-          <li>Разработка высокопроизводительного парсера.</li>
-          <li>Обработка потоковых данных.</li>
-          <li>Восстановление границ сообщений.</li>
-        </ul>
-      </div>
-
-      <div class="project-card">
-        <h3>Управление станцией FESTO</h3>
-        <ul>
-          <li>Разработка ПО на Python.</li>
-          <li>Реализация логики управления оборудованием.</li>
-          <li>Обработка сигналов и тестирование.</li>
-        </ul>
-      </div>
-
-      <div class="project-card">
-        <h3>Амплитудно-модулированный UART</h3>
-        <ul>
-          <li>Разработка embedded ПО для STM32.</li>
-          <li>Обмен данными по модифицированному UART.</li>
-          <li>Отладка алгоритмов передачи.</li>
-        </ul>
-      </div>
-
-      <div class="project-card">
-        <h3>Музыкальный визуализатор</h3>
-        <ul>
-          <li>Приложение на C++.</li>
-          <li>Обработка аудиосигнала.</li>
-          <li>Визуализация спектра в реальном времени.</li>
-        </ul>
-      </div>
-
-    </div>
-  </section>
-
-  <section>
-    <h2>Образование</h2>
-    <div class="timeline">
-      <div class="timeline-item">
-        <div class="timeline-date">2025 — 2027</div>
-        <div class="timeline-title">СПбПУ Петра Великого</div>
-        <div class="timeline-subtitle">Магистратура: Киберфизические системы и технологии</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">2021 — 2025</div>
-        <div class="timeline-title">СПбПУ Петра Великого</div>
-        <div class="timeline-subtitle">Бакалавриат (с отличием): Управление и информатика в технических системах</div>
-      </div>
-    </div>
-  </section>
-
 </div>
 
-<footer>
-  <p>[ SYSTEM READY ]</p>
-  <p style="margin-top: 10px; font-size: 0.8rem;">© 2026 Худобин Андрей. Сгенерировано с помощью GitHub Pages.</p>
-</footer>
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div id="main-content">
+  <div class="container">
+    
+    <header class="hero-section">
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+          <div class="terminal-title">anvax@system:~</div>
+        </div>
+        <div class="terminal-body">
+          <div><span class="prompt">anvax@system:~$</span> ./init_profile.sh</div>
+          <h1>Худобин Андрей</h1>
+          <div class="role typewriter">Инженер-программист</div>
+          <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.95rem;">
+            Разрабатываю ПО для промышленной автоматизации, настраиваю Linux-инфраструктуру и программирую микроконтроллеры.
+          </p>
+          <div class="contact-links">
+            <a href="mailto:a2.khudobin3@gmail.com" class="btn primary">📩 Email</a>
+            <a href="https://t.me/anvax" target="_blank" class="btn">✈️ Telegram</a>
+            <a href="tel:+79117285089" class="btn">📞 Позвонить</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ИНТЕРАКТИВНЫЙ БЛОК: ОБО МНЕ -->
+    <div class="interactive-section open">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Обо мне</h2>
+        <span class="toggle-icon">▶</span>
+      </div>
+      <div class="section-content">
+        <p style="margin-bottom: 10px; font-size: 0.95rem;">
+          Выпускник <strong>СПбПУ Петра Великого</strong> с отличием по направлению «Управление в технических системах». Обучаюсь в магистратуре по направлению «Киберфизические системы и технологии».
+        </p>
+        <p style="font-size: 0.95rem;">
+          Имею опыт разработки программного обеспечения для автоматизированных систем, реализации логики обработки сигналов и работы с промышленными технологиями. Работал с <strong>C++, Python, Linux</strong> и промышленными протоколами.
+        </p>
+      </div>
+    </div>
+
+    <!-- ИНТЕРАКТИВНЫЙ БЛОК: НАВЫКИ -->
+    <div class="interactive-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Стек технологий</h2>
+        <span class="toggle-icon">▶</span>
+      </div>
+      <div class="section-content">
+        <div class="skills-grid">
+          <span class="skill-tag">C++</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Linux</span>
+          <span class="skill-tag">Docker</span>
+          <span class="skill-tag">Ansible</span>
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">MATLAB / Simulink</span>
+          <span class="skill-tag">CODESYS</span>
+          <span class="skill-tag">SCADA</span>
+          <span class="skill-tag">STM32</span>
+          <span class="skill-tag">Siemens PLC</span>
+          <span class="skill-tag">Modbus RTU/TCP</span>
+          <span class="skill-tag">OPC UA</span>
+          <span class="skill-tag">MQTT</span>
+          <span class="skill-tag">Grafana</span>
+          <span class="skill-tag">Английский (C1)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ИНТЕРАКТИВНЫЙ БЛОК: ОПЫТ -->
+    <div class="interactive-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Опыт работы</h2>
+        <span class="toggle-icon">▶</span>
+      </div>
+      <div class="section-content">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-date">Июль 2024 — Настоящее время</div>
+            <div class="timeline-title">НПФ «Система-Сервис»</div>
+            <div class="timeline-subtitle">Инженер</div>
+            <ul class="timeline-desc">
+              <li>Разработка ПО для контроллеров (C++/ST).</li>
+              <li>Алгоритмы управления: блок-схемы и преобразование в код.</li>
+              <li>Разработка мнемосхем SCADA.</li>
+              <li>Драйверы обмена (Modbus RTU/TCP).</li>
+            </ul>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">Июль 2023 — Июль 2024</div>
+            <div class="timeline-title">НИЦ СПб ЭТУ</div>
+            <div class="timeline-subtitle">Техник-программист</div>
+            <ul class="timeline-desc">
+              <li>Тестовые задания по C++ и микроконтроллерам.</li>
+              <li>Моделирование СУ электроприводом в MATLAB.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ИНТЕРАКТИВНЫЙ БЛОК: ПРОЕКТЫ -->
+    <div class="interactive-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Ключевые проекты</h2>
+        <span class="toggle-icon">▶</span>
+      </div>
+      <div class="section-content">
+        <div class="projects-grid">
+          
+          <div class="project-card">
+            <h3>ВКР: Управление вентиляцией ГПА</h3>
+            <ul>
+              <li>Разработка ПО системы управления.</li>
+              <li>Реализация алгоритмов обработки сигналов.</li>
+              <li>Настройка имитационного режима.</li>
+            </ul>
+          </div>
+
+          <div class="project-card">
+            <h3>Инфраструктура автоматизированных систем</h3>
+            <ul>
+              <li>Настройка Linux, Ansible.</li>
+              <li>Контейнеризация (Docker).</li>
+              <li>Взаимодействие по MQTT, Grafana.</li>
+            </ul>
+          </div>
+
+          <div class="project-card">
+            <h3>Парсер Protocol Buffers (C++)</h3>
+            <ul>
+              <li>Высокопроизводительный парсер.</li>
+              <li>Обработка потоковых данных.</li>
+            </ul>
+          </div>
+
+          <div class="project-card">
+            <h3>Амплитудно-модулированный UART</h3>
+            <ul>
+              <li>Embedded ПО для STM32.</li>
+              <li>Модифицированный UART.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ИНТЕРАКТИВНЫЙ БЛОК: ОБРАЗОВАНИЕ -->
+    <div class="interactive-section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>Образование</h2>
+        <span class="toggle-icon">▶</span>
+      </div>
+      <div class="section-content">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-date">2025 — 2027</div>
+            <div class="timeline-title">СПбПУ Петра Великого</div>
+            <div class="timeline-subtitle">Магистратура: Киберфизические системы</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">2021 — 2025</div>
+            <div class="timeline-title">СПбПУ Петра Великого</div>
+            <div class="timeline-subtitle">Бакалавриат (с отличием): Управление в тех. системах</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>[ SYSTEM READY ]</p>
+    <p style="margin-top: 10px;">© 2026 Худобин Андрей.</p>
+  </footer>
+</div>
 
 <script>
-  // --- 1. Анимация появления блоков при скролле ---
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
+  // --- 1. Логика экрана заставки ---
+  function startSystem() {
+    const bootScreen = document.getElementById('boot-screen');
+    const mainContent = document.getElementById('main-content');
+    
+    // Уезжаем вверх
+    bootScreen.classList.add('slide-up');
+    
+    // Показываем контент
+    setTimeout(() => {
+      mainContent.classList.add('active');
+      document.body.style.overflow = 'auto'; // Возвращаем скролл
+    }, 500);
+  }
 
-  document.querySelectorAll('section').forEach(section => {
-    observer.observe(section);
-  });
+  // Блокируем скролл пока висит заставка
+  document.body.style.overflow = 'hidden';
 
-  // --- 2. Интерактивный фон (Matrix Rain) ---
+  // Симуляция загрузки текста на заставке
+  const logs = [
+    "> Инициализация ядра...",
+    "> Загрузка профиля пользователя...",
+    "> Проверка соединения... OK",
+    "> Готово к работе."
+  ];
+  let logIndex = 0;
+  const logElement = document.getElementById('boot-logs');
+  
+  setInterval(() => {
+    if (logIndex < logs.length - 1) {
+      logIndex++;
+      logElement.innerHTML += "<br>" + logs[logIndex];
+    }
+  }, 800);
+
+  // --- 2. Аккордеон для блоков (интерактив) ---
+  function toggleSection(header) {
+    const section = header.parentElement;
+    section.classList.toggle('open');
+  }
+
+  // --- 3. Анимация фона (Matrix Rain) ---
   const canvas = document.getElementById('matrix-bg');
   const ctx = canvas.getContext('2d');
 
@@ -562,15 +718,13 @@
   const columns = canvas.width / fontSize;
 
   const drops = [];
-  for (let x = 0; x < columns; x++) {
-    drops[x] = 1;
-  }
+  for (let x = 0; x < columns; x++) drops[x] = 1;
 
   function draw() {
-    ctx.fillStyle = 'rgba(5, 8, 15, 0.05)'; // Цвет фона с прозрачностью
+    ctx.fillStyle = 'rgba(5, 8, 15, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = '#00ffaa'; // Цвет текста матрицы
+    ctx.fillStyle = '#00ffaa';
     ctx.font = fontSize + 'px monospace';
 
     for (let i = 0; i < drops.length; i++) {
